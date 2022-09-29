@@ -43,7 +43,7 @@ class Home extends React.Component {
                         {ready ? (
                             schedules.length ? (
                                 schedules.map((s, i) => (
-                                    <ListItem Component={TouchableNativeFeedback} onPress={() => navigation.navigate('Meeting', { schedule: s, refreshHome: this.fetch.bind(this) })} key={i} bottomDivider>
+                                    <ListItem Component={TouchableNativeFeedback} onPress={() => navigation.navigate('Room', { schedule: s, refreshHome: this.fetch.bind(this) })} key={i} bottomDivider>
                                         <ListItem.Content>
                                             <ListItem.Title style={{ fontWeight: 'bold', fontSize: 17 }}>{s.subject.name}</ListItem.Title>
                                             <ListItem.Subtitle style={{ fontSize: 13 }}>{s.class.name} - {s.class.attendances.length} peserta</ListItem.Subtitle>

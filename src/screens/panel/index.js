@@ -1,5 +1,6 @@
 import { default as LHome } from './lecturer/Home';
-import { default as LMeeting } from './lecturer/Meeting';
+import { default as LRoom } from './lecturer/Room';
 import { default as LMeter } from './lecturer/Meter';
+import { default as LStats } from './lecturer/Stats';
 
-export { LHome, LMeeting, LMeter };
+export { LHome, LRoom, LMeter, LStats };

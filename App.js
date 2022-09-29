@@ -25,7 +25,7 @@ import Login from './src/screens/Login';
 import Loading from './src/screens/Loading';
 import Error from './src/screens/Error';
 
-import { LHome, LMeeting, LMeter } from './src/screens/panel';
+import { LHome, LRoom, LMeter, LStats } from './src/screens/panel';
 
 const socket = io(`${config.baseURL}:${config.port}`);
 const client = feathers();
@@ -91,11 +91,14 @@ class App extends React.Component {
                       }} name="Home">
                         {props => <LHome {...props} user={user} client={client} />}
                       </Stack.Screen>
-                      <Stack.Screen options={{ title: 'Pertemuan' }} name="Meeting">
-                        {props => <LMeeting {...props} user={user} client={client} />}
+                      <Stack.Screen options={{ title: 'Kelas' }} name="Room">
+                        {props => <LRoom {...props} user={user} client={client} />}
                       </Stack.Screen>
                       <Stack.Screen options={{ title: 'Meter' }} name="Meter">
                         {props => <LMeter {...props} user={user} client={client} />}
+                      </Stack.Screen>
+                      <Stack.Screen options={{ title: 'Stats' }} name="Stats">
+                        {props => <LStats {...props} user={user} client={client} />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )
