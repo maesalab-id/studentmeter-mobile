@@ -55,6 +55,7 @@ class App extends React.Component {
 
     socket.on('connect_error', async (e) => {
       console.log(e);
+      alert(JSON.stringify(e));
       this.setState({ ready: true, error: true });
     });
   }
