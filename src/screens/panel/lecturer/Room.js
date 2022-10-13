@@ -32,14 +32,7 @@ class Room extends React.Component {
                     <Tab.Item titleStyle={{ color: 'rgba(111, 202, 186, 1)' }} containerStyle={{ backgroundColor: 'rgba(111, 202, 186, .1)' }} title="PERTEMUAN" />
                     <Tab.Item titleStyle={{ color: 'rgba(111, 202, 186, 1)' }} containerStyle={{ backgroundColor: 'rgba(111, 202, 186, .1)' }} title="MAHASISWA" />
                 </Tab>
-                <TabView value={index} onChange={(index) => this.setState({ index })}>
-                    <TabView.Item style={{ width: '100%' }}>
-                        <Meeting {...this.props} />
-                    </TabView.Item>
-                    <TabView.Item style={{ width: '100%' }}>
-                        <Students {...this.props} />
-                    </TabView.Item>
-                </TabView>
+                {index === 0 ? <Meeting {...this.props} /> : <Students {...this.props} />}
             </ScrollView>
         )
     }

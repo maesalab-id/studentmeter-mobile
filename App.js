@@ -25,7 +25,7 @@ import Login from './src/screens/Login';
 import Loading from './src/screens/Loading';
 import Error from './src/screens/Error';
 
-import { LHome, LRoom, LMeter, LStats } from './src/screens/panel';
+import { LHome, LRoom, LMeter, LStats, LTask, LSubmission, RHome, RMeeting, RTask } from './src/screens/panel';
 
 const socket = io(`${config.baseURL}:${config.port}`);
 const client = feathers();
@@ -54,7 +54,6 @@ class App extends React.Component {
     });
 
     socket.on('connect_error', async (e) => {
-      console.log(e);
       alert(JSON.stringify(e));
       this.setState({ ready: true, error: true });
     });
@@ -98,13 +97,34 @@ class App extends React.Component {
                       <Stack.Screen options={{ title: 'Meter' }} name="Meter">
                         {props => <LMeter {...props} user={user} client={client} />}
                       </Stack.Screen>
+                      <Stack.Screen options={{ title: 'Task' }} name="Task">
+                        {props => <LTask {...props} user={user} client={client} />}
+                      </Stack.Screen>
                       <Stack.Screen options={{ title: 'Stats' }} name="Stats">
                         {props => <LStats {...props} user={user} client={client} />}
                       </Stack.Screen>
+                      <Stack.Screen options={{ title: 'Submission' }} name="Submission">
+                        {props => <LSubmission {...props} user={user} client={client} />}
+                      </Stack.Screen>
                     </Stack.Navigator>
                   )
-                } else if (user.type === 'study-program') {
-                  return (null);
+                } else if (user.type === 'student') {
+                  return (
+                    <Stack.Navigator screenOptions={{ title: `Halo, ${user.name}!` }}>
+                      <Stack.Screen options={{
+                        headerRight: () => <Icon onPress={self.onLogout.bind(self)} name="logout" />,
+                        headerRightContainerStyle: { paddingRight: 12 }
+                      }} name="Home">
+                        {props => <RHome {...props} user={user} client={client} />}
+                      </Stack.Screen>
+                      <Stack.Screen options={{ title: 'Meeting' }} name="Meeting">
+                        {props => <RMeeting {...props} user={user} client={client} />}
+                      </Stack.Screen>
+                      <Stack.Screen options={{ title: 'Task' }} name="Task">
+                        {props => <RTask {...props} user={user} client={client} />}
+                      </Stack.Screen>
+                    </Stack.Navigator>
+                  );
                 }
               })(this)
               )}

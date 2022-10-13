@@ -1256,6 +1256,11 @@
     color "^3.1.3"
     react-native-iphone-x-helper "^1.3.0"
 
+"@sharcoux/slider@^6.0.3":
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@sharcoux/slider/-/slider-6.0.3.tgz#0c43eade31fa64ea5d41ad1ce474c375fe35f806"
+  integrity sha512-eVweQ/BIc6jRXnUEWRKtytN5QndogBjiZqVxgXRcGRRI/DkeZV0Q5CcOsf7By6oUdCym3fORU7jTKMS8rIXlQA==
+
 "@sideway/address@^4.1.0":
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/@sideway/address/-/address-4.1.2.tgz#811b84333a335739d3969cfc434736268170cad1"

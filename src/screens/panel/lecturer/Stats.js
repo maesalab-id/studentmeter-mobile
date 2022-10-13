@@ -4,7 +4,7 @@ import {
   RadarChart
 } from 'react-native-charts-wrapper';
 import { Dimensions } from 'react-native';
-import { Tab, TabView } from 'react-native-elements';
+import { Tab, TabView, Icon } from 'react-native-elements';
 import Loading from '../../Loading';
 
 
@@ -53,38 +53,43 @@ class Stats extends React.Component {
         <View style={style.container}>
           <View>
             {ready ? (
-              <View>
-                <Tab value={index} onChange={(index) => this.setState({ index })} style={{ backgroundColor: 'rgba(111, 202, 186, 1)' }} indicatorStyle={{ backgroundColor: 'rgba(111, 202, 186, 1)' }}>
-                  {performances.map((p, i) => (
-                    <Tab.Item key={i} titleStyle={{ color: 'rgba(111, 202, 186, 1)' }} containerStyle={{ backgroundColor: 'rgba(111, 202, 186, .1)' }} title={`#${p.number}`} />
-                  ))}
-                </Tab>
-                <TabView value={index} onChange={(index) => this.setState({ index })}>
-                  {performances.map((p, i) => (
-                    <TabView.Item key={i} style={{ width: '100%', padding: 0, margin: 0 }}>
-                      {this.hasData(p) ? (
-                        <RadarChart
-                          style={{ width: '100%', height: Dimensions.get('window').height - 200 }}
-                          xAxis={{ valueFormatter: Object.keys(p.stats[0].value) }}
-                          data={{
-                            dataSets: [{
-                              values: (function () {
-                                const keys = Object.keys(p.stats[0].value);
-                                const values = keys.map((k) => ({ value: p.stats[0].value[k] }));
-                                console.log(values);
-                                return values;
-                              })(),
-                              label: route.params.student.name,
-                              config: { drawFilled: true }
-                            }],
-                          }}
-                        />
-                      ) : <Text style={{ fontSize: 25, textAlign: 'center', marginTop: 20 }}>Data belum diisi</Text>}
-                    </TabView.Item>
-                  ))}
-                </TabView>
-
-              </View>
+              performances.length ? (
+                <View>
+                  <Tab value={index} onChange={(index) => this.setState({ index })} style={{ backgroundColor: 'rgba(111, 202, 186, 1)' }} indicatorStyle={{ backgroundColor: 'rgba(111, 202, 186, 1)' }}>
+                    {performances.map((p, i) => (
+                      <Tab.Item key={i} titleStyle={{ color: 'rgba(111, 202, 186, 1)' }} containerStyle={{ backgroundColor: 'rgba(111, 202, 186, .1)' }} title={`#${p.number}`} />
+                    ))}
+                  </Tab>
+                  <TabView value={index} onChange={(index) => this.setState({ index })}>
+                    {performances.map((p, i) => (
+                      <TabView.Item key={i} style={{ width: '100%', padding: 0, margin: 0 }}>
+                        {this.hasData(p) ? (
+                          <RadarChart
+                            style={{ width: '100%', height: Dimensions.get('window').height - 200 }}
+                            xAxis={{ valueFormatter: Object.keys(p.stats[0].value) }}
+                            data={{
+                              dataSets: [{
+                                values: (function () {
+                                  const keys = Object.keys(p.stats[0].value);
+                                  const values = keys.map((k) => ({ value: p.stats[0].value[k] }));
+                                  console.log(values);
+                                  return values;
+                                })(),
+                                label: route.params.student.name,
+                                config: { drawFilled: true }
+                              }],
+                            }}
+                          />
+                        ) : <Text style={{ fontSize: 25, textAlign: 'center', marginTop: 20 }}>Data belum diisi</Text>}
+                      </TabView.Item>
+                    ))}
+                  </TabView>
+                </View>
+              ) : (
+                <View style={{ paddingTop: 100 }}>
+                  <Icon name="inventory" size={100} color="#dbdbdb" />
+                </View>
+              )
             ) : (
               <Loading />
             )}

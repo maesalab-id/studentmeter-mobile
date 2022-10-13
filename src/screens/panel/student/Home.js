@@ -17,7 +17,7 @@ const style = StyleSheet.create({
 });
 
 class Home extends React.Component {
-    state = { ready: false, loading: false, newClass: '', schedules: [] };
+    state = { ready: false, loading: false, newClass: '', enrollments: [] };
     componentDidMount() {
         this.fetch();
     }
@@ -25,45 +25,48 @@ class Home extends React.Component {
         console.log('fetch');
         const { client } = this.props;
         this.setState({ ready: false });
-        const schedules = await client.service('schedules').find();
-        console.log(schedules);
-        this.setState({ ready: true, schedules: schedules.data });
+        const enrollments = await client.service('enrollments').find();
+        this.setState({ ready: true, enrollments: enrollments });
     }
     getTotals(schedule) {
         const totalMeetings = schedule.meetings.length;
         let totalTasks = 0;
         for (let i = 0; i < totalMeetings; i++) {
             totalTasks += schedule.meetings[i].tasks.length;
-        }
+        };
         let totalCompleted = 0;
         for (let i = 0; i < totalMeetings; i++) {
             for (let j = 0; j < schedule.meetings[i].tasks.length; j++) {
                 totalCompleted += schedule.meetings[i].tasks[j].submissions.length;
             }
         }
-        return <Text style={{ fontWeight: 'bold' }}>{`${schedule.class.attendances.length} peserta, ${totalMeetings} pertemuan, ${totalTasks} tugas`}</Text>
+        return <Text style={{ fontWeight: 'bold' }}>{`${totalMeetings} pertemuan, ${totalCompleted}/${totalTasks} tugas`}</Text>
     }
     render() {
         const { navigation } = this.props;
-        const { schedules, ready, loading } = this.state;
+        const { enrollments, ready, loading } = this.state;
         return (
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                 <View style={style.container}>
                     <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 20 }}>
-                        <Text style={style.title}>Jadwal Mengajar</Text>
+                        <Text style={style.title}>Jadwal Kelas</Text>
                         <Border margin={-4} />
                     </View>
                     <View>
                         {ready ? (
-                            schedules.length ? (
-                                schedules.map((s, i) => (
-                                    <ListItem Component={TouchableNativeFeedback} onPress={() => navigation.navigate('Room', { schedule: s, refreshHome: this.fetch.bind(this) })} key={i} bottomDivider>
-                                        <ListItem.Content>
-                                            <ListItem.Title style={{ fontWeight: 'bold', fontSize: 17 }}>{s.subject.name}</ListItem.Title>
-                                            <ListItem.Subtitle style={{ fontSize: 13 }}>{s.class.name} - {this.getTotals(s)}</ListItem.Subtitle>
-                                        </ListItem.Content>
-                                        <ListItem.Chevron />
-                                    </ListItem>
+                            enrollments.length ? (
+                                enrollments.map((e, i) => (
+                                    <View key={i}>
+                                        {e.class.schedules.map((s, j) => (
+                                            <ListItem Component={TouchableNativeFeedback} key={j} onPress={() => navigation.navigate('Meeting', { schedule: s })} bottomDivider>
+                                                <ListItem.Content>
+                                                    <ListItem.Title style={{ fontWeight: 'bold', fontSize: 17 }}>{s.subject.name}</ListItem.Title>
+                                                    <ListItem.Subtitle style={{ fontSize: 13 }}>{e.class.name} - {this.getTotals(s)}</ListItem.Subtitle>
+                                                </ListItem.Content>
+                                                <ListItem.Chevron />
+                                            </ListItem>
+                                        ))}
+                                    </View>
                                 ))
                             ) : (
                                 <View>

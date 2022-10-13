@@ -27,6 +27,7 @@ class Meeting extends React.Component {
     this.setState({ ready: true, meetings: meetings.data });
   }
   add() {
+    console.log(this.props);
     const { client, route } = this.props;
     Alert.alert('Buat pertemuan?', `Anda yakin akan membuka pertemuan baru di tanggal ${moment().format('D MMMM YYYY')}?`, [{
       text: 'Buat Pertemuan',
@@ -75,7 +76,7 @@ class Meeting extends React.Component {
                   <ListItem Component={TouchableNativeFeedback} onLongPress={() => this.onLongPress(s)} onPress={() => navigation.navigate('Meter', { meeting: s, schedule: route.params.schedule, refreshHome: this.fetch.bind(this) })} key={i} bottomDivider>
                     <ListItem.Content>
                       <ListItem.Title style={{ fontWeight: 'bold', fontSize: 17 }}>Pertemuan #{s.number}</ListItem.Title>
-                      <ListItem.Subtitle style={{ fontSize: 13 }}>{s.date}</ListItem.Subtitle>
+                      <ListItem.Subtitle style={{ fontSize: 13 }}>{s.date} - {s.tasks.length} tugas</ListItem.Subtitle>
                     </ListItem.Content>
                     <ListItem.Chevron />
                   </ListItem>
