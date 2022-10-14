@@ -1,8 +1,11 @@
 import React from 'react';
-import { View, ScrollView, Text, StyleSheet, TouchableNativeFeedback, Alert } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableNativeFeedback, PermissionsAndroid, ToastAndroid } from 'react-native';
 import { Icon, Button, Dialog, Input, ListItem } from 'react-native-elements';
 import moment from 'moment';
+import RNFS from 'react-native-fs';
+import FileViewer from 'react-native-file-viewer';
 import Loading from '../../Loading';
+import config from '../../../../config';
 
 const style = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
@@ -36,6 +39,29 @@ class Submission extends React.Component {
     this.setState({ ready: true, submissions: submissions.data });
   }
 
+  async download(id, name) {
+    const url = `${config.baseURL}:${config.port}/document/${id}`;
+    const toFile = `${RNFS.DownloadDirectoryPath}/${name}`;
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+      )
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        try {
+          const res = await RNFS.downloadFile({
+            fromUrl: url,
+            toFile: toFile
+          });
+          ToastAndroid.show(`File ${name} berhasil disimpan`, ToastAndroid.LONG);
+          await FileViewer.open(toFile);
+        } catch (e) { ToastAndroid.show('Error: ' + e.message, ToastAndroid.LONG) };
+
+      } else {
+        return false;
+      }
+    } catch (err) { console.log(err); return false }
+  }
+
   render() {
     const { navigation, route } = this.props;
     const { ready, submissions } = this.state;
@@ -49,7 +75,7 @@ class Submission extends React.Component {
             {ready ? (
               submissions.length ? (
                 submissions.map((s, i) => (
-                  <ListItem Component={TouchableNativeFeedback} key={i} bottomDivider>
+                  <ListItem Component={TouchableNativeFeedback} onPress={() => this.download(s.id, `${s.filename}`)} key={i} bottomDivider>
                     <ListItem.Content>
                       <ListItem.Title style={{ fontWeight: 'bold', fontSize: 17 }}>{s.student.name}</ListItem.Title>
                       <ListItem.Subtitle style={{ fontSize: 13 }}>{s.filename} - diupload pada {moment(s.created_at).format('YYYY-MM-DD')}</ListItem.Subtitle>
