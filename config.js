@@ -1,6 +1,8 @@
 export default {
-    // baseURL: 'http://192.168.128.78',
-    baseURL: 'http://10.0.2.2',
-    // port: 8085
-    port: 3030
+    baseURL: 'https://studentmeter.maesalab.com',
+    // baseURL: 'http://10.0.2.2',
+    // baseURL: 'http://192.168.241.78',
+
+    port: 443
+    // port: 3030,
 }

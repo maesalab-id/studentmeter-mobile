@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet, TouchableNativeFeedback, Alert } from 'react-native';
-import { ListItem, Button, Icon, FAB, Dialog } from 'react-native-elements';
+import { ListItem, Button, Icon, FAB, Dialog, Input } from 'react-native-elements';
 import _ from 'lodash';
 import Loading from '../screens/Loading';
 import FilterSlider from '../components/FilterSlider';
 
 const style = StyleSheet.create({
+  smText: { fontSize: 20, backgroundColor: 'rgba(0,0,0,.04)' },
   container: { flex: 1, backgroundColor: '#fff' },
   title: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
   classCard: {
@@ -17,7 +18,7 @@ const style = StyleSheet.create({
 });
 
 class Students extends React.Component {
-  state = { ready: false, loading: false, attendances: [], openFilter: false };
+  state = { ready: false, loading: false, attendances: [], openFilter: false, q: '' };
   componentDidMount() {
     const { route } = this.props;
     const schedule = route.params.schedule;
@@ -39,12 +40,11 @@ class Students extends React.Component {
         filter: JSON.stringify(filter)
       }
     });
-
     this.setState({ ready: true, attendances: attendances.data });
   }
   render() {
     const { navigation, route } = this.props;
-    const { attendances, ready, openFilter, filter } = this.state;
+    const { attendances, ready, openFilter, filter, q } = this.state;
     return (
       <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
         <View style={style.container}>
@@ -55,9 +55,12 @@ class Students extends React.Component {
                 borderRadius: 5
               }} onPress={() => this.setState({ openFilter: true })} />
             </View>
+            <View style={{ paddingLeft: 10, paddingRight: 10 }}>
+              <Input leftIcon={{ name: 'search' }} containerStyle={{ marginBottom: -20 }} onChangeText={(t) => this.setState({ q: t })} placeholder="Cari..." />
+            </View>
             {ready ? (
               attendances.length ? (
-                attendances.map((a, i) => (
+                attendances.filter((a) => a.student.name.toLowerCase().indexOf(q.toLowerCase()) !== -1).map((a, i) => (
                   <ListItem Component={TouchableNativeFeedback} onPress={() => navigation.navigate('Stats', { student: a.student, schedule: route.params.schedule })} key={i} bottomDivider>
                     <ListItem.Content>
                       <ListItem.Title style={{ fontWeight: 'bold', fontSize: 17 }}>{a.student.name}</ListItem.Title>

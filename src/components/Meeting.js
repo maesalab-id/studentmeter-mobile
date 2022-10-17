@@ -21,13 +21,12 @@ class Meeting extends React.Component {
     this.fetch();
   }
   async fetch() {
-    const { client } = this.props;
+    const { client, route } = this.props;
     this.setState({ ready: false });
-    const meetings = await client.service('meetings').find();
+    const meetings = await client.service('meetings').find({ query: { scheduleId: route.params.schedule.id } });
     this.setState({ ready: true, meetings: meetings.data });
   }
   add() {
-    console.log(this.props);
     const { client, route } = this.props;
     Alert.alert('Buat pertemuan?', `Anda yakin akan membuka pertemuan baru di tanggal ${moment().format('D MMMM YYYY')}?`, [{
       text: 'Buat Pertemuan',

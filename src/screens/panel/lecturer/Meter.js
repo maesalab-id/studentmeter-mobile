@@ -16,7 +16,7 @@ const style = StyleSheet.create({
 });
 
 class Meter extends React.Component {
-    state = { ready: false, loading: false, stats: [], selected: null };
+    state = { ready: false, loading: false, stats: [], selected: null, q: '' };
     componentDidMount() {
         this.fetch();
     }
@@ -32,7 +32,7 @@ class Meter extends React.Component {
     }
     render() {
         const { client, route, navigation } = this.props;
-        const { stats, ready, selected } = this.state;
+        const { stats, ready, selected, q } = this.state;
         return (
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                 <View style={style.container}>
@@ -45,10 +45,13 @@ class Meter extends React.Component {
                             <Button onPress={() => navigation.navigate('Task', { schedule: route.params.schedule, meeting: route.params.meeting })} icon={{ name: 'add-task', color: '#fff' }} containerStyle={{ borderRadius: 100 }} buttonStyle={{ backgroundColor: 'rgba(111, 202, 186, 1)', borderRadius: 100, width: 50, height: 50 }} />
                         </View>
                     </View>
+                    <View style={{ paddingLeft: 10, paddingRight: 10 }}>
+                        <Input leftIcon={{ name: 'search' }} containerStyle={{ marginBottom: -20 }} onChangeText={(t) => this.setState({ q: t })} placeholder="Cari..." />
+                    </View>
                     <View>
                         {ready ? (
                             stats.length ? (
-                                stats.map((s, i) => (
+                                stats.filter((s) => s.student.name.toLowerCase().indexOf(q.toLowerCase()) !== -1).map((s, i) => (
                                     <ListItem Component={TouchableNativeFeedback} onPress={() => this.setState({ selected: s })} key={i} bottomDivider>
                                         <ListItem.Content>
                                             <ListItem.Title style={{ fontWeight: 'bold', fontSize: 17 }}>{s.student.name}</ListItem.Title>
