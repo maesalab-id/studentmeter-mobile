@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet, TouchableNativeFeedback } from 'react-native';
-import { ListItem, Icon, Dialog, Button, Input } from 'react-native-elements';
+import { ListItem, Icon, Dialog, Button, Input, Switch } from 'react-native-elements';
 import Slider from '@react-native-community/slider';
 import Loading from '../../Loading';
+import FilterSlider from '../../../components/FilterSlider';
 
 const style = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#fff' },
@@ -16,23 +17,57 @@ const style = StyleSheet.create({
 });
 
 class Meter extends React.Component {
-    state = { ready: false, loading: false, stats: [], selected: null, q: '' };
+    state = { ready: false, loading: false, stats: [], selected: null, q: '', openFilter: false, assess: false };
     componentDidMount() {
+        const { route } = this.props;
+        const schedule = route.params.schedule;
+        const filter = {};
+        for (let i = 0; i < schedule.stats.length; i++) {
+            const stat = schedule.stats[i];
+            filter[stat] = [0, 100];
+        }
+        this.setState({ filter }, this.fetch.bind(this));
         this.fetch();
+    }
+    toggleAssess() {
+        const { route } = this.props;
+        const schedule = route.params.schedule;
+        const assess = !this.state.assess;
+        this.setState({ assess: assess }, () => {
+            const filter = {};
+            if (!assess) {
+                for (let i = 0; i < schedule.stats.length; i++) {
+                    const stat = schedule.stats[i];
+                    filter[stat] = [0, 100];
+                }
+            } else {
+                for (let i = 0; i < schedule.assessments.length; i++) {
+                    const stat = schedule.assessments[i].name;
+                    filter[stat] = [0, 100];
+                }
+            }
+            this.setState({ filter }, this.fetch.bind(this));
+        });
     }
     async fetch() {
         const { client, route } = this.props;
+        const { assess, filter } = this.state;
+        const schedule = route.params.schedule;
+
         this.setState({ ready: false });
         const stats = await client.service('stats').find({
             query: {
-                meetingId: route.params.meeting.id
+                meetingId: route.params.meeting.id,
+                scheduleId: schedule.id,
+                filter: JSON.stringify(filter),
+                assess: assess
             }
         });
         this.setState({ ready: true, stats: stats.data });
     }
     render() {
         const { client, route, navigation } = this.props;
-        const { stats, ready, selected, q } = this.state;
+        const { stats, ready, selected, q, assess, openFilter, filter } = this.state;
         return (
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                 <View style={style.container}>
@@ -42,7 +77,15 @@ class Meter extends React.Component {
                             <Text style={{ fontSize: 15, color: 'rgba(111, 202, 186, 1)' }}>Pertemuan #{route.params.meeting.number} - {route.params.meeting.date}</Text>
                         </View>
                         <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                            <Button onPress={() => navigation.navigate('Task', { schedule: route.params.schedule, meeting: route.params.meeting })} icon={{ name: 'add-task', color: '#fff' }} containerStyle={{ borderRadius: 100 }} buttonStyle={{ backgroundColor: 'rgba(111, 202, 186, 1)', borderRadius: 100, width: 50, height: 50 }} />
+                            <Button onPress={() => navigation.navigate('Task', { schedule: route.params.schedule, meeting: route.params.meeting })} icon={{ name: 'list', color: '#fff' }} containerStyle={{ borderRadius: 100 }} buttonStyle={{ backgroundColor: 'rgba(111, 202, 186, 1)', borderRadius: 100, width: 50, height: 50 }} />
+                        </View>
+                    </View>
+                    <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 10, flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <View style={{ flex: 5 }}>
+                            <Button title="Filter Performa" icon={{ name: 'filter-alt', color: '#fff' }} type="solid" buttonStyle={{ backgroundColor: 'rgba(111, 202, 186, 1)', borderRadius: 5 }} onPress={() => this.setState({ openFilter: true })} />
+                        </View>
+                        <View style={{ flex: 1, justifyContent: 'center' }}>
+                            <Switch color="rgba(111, 202, 186, 1)" value={assess} onValueChange={this.toggleAssess.bind(this)} />
                         </View>
                     </View>
                     <View style={{ paddingLeft: 10, paddingRight: 10 }}>
@@ -75,6 +118,14 @@ class Meter extends React.Component {
                         <Dialog.Title title={selected.student.name} />
                         <View>
                             <MeterSlide schedule={route.params.schedule} stat={selected} client={client} onDone={this.fetch.bind(this)} />
+                        </View>
+                    </Dialog>
+                )}
+                {openFilter && (
+                    <Dialog overlayStyle={{ width: '90%' }} isVisible={true} onBackdropPress={() => this.setState({ openFilter: false })}>
+                        <Dialog.Title title="Filter Performa" />
+                        <View>
+                            <FilterSlider value={filter} onDone={(f) => this.setState({ filter: f, openFilter: false }, this.fetch.bind(this))} />
                         </View>
                     </Dialog>
                 )}
