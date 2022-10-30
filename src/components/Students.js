@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet, TouchableNativeFeedback, Alert } from 'react-native';
-import { ListItem, Button, Icon, FAB, Dialog, Input, Switch } from 'react-native-elements';
+import { ListItem, Button, Icon, Dialog, Input, Badge } from 'react-native-elements';
+import { Picker } from '@react-native-picker/picker';
 import _ from 'lodash';
 import Loading from '../screens/Loading';
 import FilterSlider from '../components/FilterSlider';
@@ -29,10 +30,9 @@ class Students extends React.Component {
     }
     this.setState({ filter }, this.fetch.bind(this));
   }
-  toggleAssess() {
+  toggleAssess(assess) {
     const { route } = this.props;
     const schedule = route.params.schedule;
-    const assess = !this.state.assess;
     this.setState({ assess: assess }, () => {
       const filter = {};
       if (!assess) {
@@ -71,14 +71,18 @@ class Students extends React.Component {
         <View style={style.container}>
           <View>
             <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 10, flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-              <View style={{ flex: 5 }}>
-                <Button title="Filter Performa" icon={{ name: 'filter-alt', color: '#fff' }} type="solid" buttonStyle={{ backgroundColor: 'rgba(111, 202, 186, 1)', borderRadius: 5 }} onPress={() => this.setState({ openFilter: true })} />
+              <View style={{ flex: 1 }}>
+                <Button icon={{ name: 'filter-alt', color: '#fff' }} type="solid" buttonStyle={{ backgroundColor: 'rgba(111, 202, 186, 1)', borderRadius: 5 }} onPress={() => this.setState({ openFilter: true })} />
               </View>
-              <View style={{ flex: 1, justifyContent: 'center' }}>
-                <Switch color="rgba(111, 202, 186, 1)" value={assess} onValueChange={this.toggleAssess.bind(this)} />
+              <View style={{ flex: 6, justifyContent: 'center' }}>
+                <Text style={{ marginLeft: 16, fontSize: 13, fontWeight: 'bold', color: 'rgba(111, 202, 186, 1)' }}>Mode View</Text>
+                <Picker style={{ marginTop: -15 }} selectedValue={assess} onValueChange={(v) => this.toggleAssess(v)}>
+                  <Picker.Item label="Parameter Mentah" value={false} />
+                  <Picker.Item label="Analitikal" value={true} />
+                </Picker>
               </View>
             </View>
-            <View style={{ paddingLeft: 10, paddingRight: 10 }}>
+            <View style={{ paddingLeft: 10, paddingRight: 10, marginTop: -15 }}>
               <Input leftIcon={{ name: 'search' }} containerStyle={{ marginBottom: -20 }} onChangeText={(t) => this.setState({ q: t })} placeholder="Cari..." />
             </View>
             {ready ? (

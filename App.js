@@ -84,12 +84,11 @@ class App extends React.Component {
               ) : ((function (self) {
                 if (user.type === 'lecturer') {
                   return (
-                    <Stack.Navigator screenOptions={{ title: `Halo, ${user.name}!` }}>
+                    <Stack.Navigator>
                       <Stack.Screen options={{
-                        headerRight: () => <Icon onPress={self.onLogout.bind(self)} name="logout" />,
-                        headerRightContainerStyle: { paddingRight: 12 }
+                        header: () => null
                       }} name="Home">
-                        {props => <LHome {...props} user={user} client={client} />}
+                        {props => <LHome {...props} user={user} client={client} logout={self.onLogout.bind(self)} />}
                       </Stack.Screen>
                       <Stack.Screen options={{ title: 'Kelas' }} name="Room">
                         {props => <LRoom {...props} user={user} client={client} />}
