@@ -7038,6 +7038,11 @@ through2@^2.0.1:
     readable-stream "~2.3.6"
     xtend "~4.0.1"
 
+time-greetings@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/time-greetings/-/time-greetings-0.1.0.tgz#6d88192aa6b0cc52e51b1f610afe0df5ff149f8c"
+  integrity sha512-IKRjHb0r63nct2+S9IJicgzwJTmIfQwig8lKgAohaxemQooXWeJn3oi1FB1sKUC2z5EseAUxQJvTN08RQpggxA==
+
 tmpl@1.0.x:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.4.tgz#23640dd7b42d00433911140820e5cf440e521dd1"
